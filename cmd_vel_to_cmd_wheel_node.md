@@ -106,8 +106,9 @@ Par base aplicado a las ruedas para ayudar al giro skid.
 * Si es alto, se facilita el giro sobre el sitio y maniobras agresivas.
 
 #### `skid_turn_gain`
-v_left  = - skid_turn_gain * w * track / 2
-v_right = + skid_turn_gain * w * track / 2
+
+*v_left  = - skid_turn_gain * w * track / 2
+*v_right = + skid_turn_gain * w * track / 2
 Ganancia que amplifica la diferencia de velocidad entre lado izquierdo y derecho.
 
 * Si es bajo, el giro será débil.
