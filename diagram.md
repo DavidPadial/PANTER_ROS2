@@ -1,36 +1,37 @@
-flowchart LR
-    subgraph Docker["Contenedor Docker: ros2_humble_unity_dev"]
-        subgraph ROS2["ROS 2 workspace"]
-            P1["paquete: panter_control"]
-            P2["paquete: wheel_control_msgs"]
-            P3["paquete: wheel_state"]
-            P4["paquete: ros_tcp_endpoint"]
+## Diagrama rápido
 
-            N1["nodo: trajectory_test_node"]
-            N2["nodo: spin_test_node"]
-            N3["nodo: cmd_vel_to_wheel_cmd_node"]
-            N4["nodo: default_server_endpoint"]
-        end
-    end
+- **Contenedor Docker**
+  - `ros2_humble_unity_dev`
+    - **ROS 2 workspace**
+      - **paquete `panter_control`**
+        - `trajectory_test_node`
+          - publica `/PANTER/cmd_vel`
+        - `spin_test_node`
+          - publica `/PANTER/cmd_vel`
+        - `cmd_vel_to_wheel_cmd_node`
+          - suscribe `/PANTER/cmd_vel`
+          - publica `/PANTER/wheel_cmd`
+      - **paquete `wheel_control_msgs`**
+        - define `WheelCommand`
+      - **paquete `wheel_state`**
+        - define `WheelState`
+      - **paquete `ros_tcp_endpoint`**
+        - `default_server_endpoint`
+          - puente ROS 2 ↔ Unity
+- **Unity**
+  - `ROS_wheelcontroller`
+    - recibe `/PANTER/wheel_cmd`
+    - publica `/PANTER/joint_states`
+    - publica opcionalmente `/PANTER/wheel_state`
+  - `WheelTopViewDebugUI`
+    - visualización y depuración
 
-    subgraph Unity["Unity"]
-        U1["ROS_wheelcontroller"]
-        U2["WheelTopViewDebugUI"]
-    end
+## Flujo principal
 
-    N1 -->|/PANTER/cmd_vel| N3
-    N2 -->|/PANTER/cmd_vel| N3
-    N3 -->|/PANTER/wheel_cmd| N4
-    N4 -->|TCP ROS-Unity| U1
-
-    U1 -->|/PANTER/joint_states| N4
-    U1 -.->|/PANTER/wheel_state (opcional)| N4
-
-    P1 --- N1
-    P1 --- N2
-    P1 --- N3
-    P2 --- N3
-    P3 -. define msg .- U1
-    P4 --- N4
-
-    U2 -. solo visualización .- U1
+`trajectory_test_node` o `spin_test_node`  
+→ `/PANTER/cmd_vel`  
+→ `cmd_vel_to_wheel_cmd_node`  
+→ `/PANTER/wheel_cmd`  
+→ `default_server_endpoint`  
+→ `ROS_wheelcontroller` en Unity  
+→ `/PANTER/joint_states`
