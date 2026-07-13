@@ -1,6 +1,3 @@
-## Diagrama rápido de paquetes y nodos
-
-```mermaid
 flowchart LR
     subgraph Docker["Contenedor Docker: ros2_humble_unity_dev"]
         subgraph ROS2["ROS 2 workspace"]
@@ -27,7 +24,7 @@ flowchart LR
     N4 -->|TCP ROS-Unity| U1
 
     U1 -->|/PANTER/joint_states| N4
-    U1 -. opcional .->|/PANTER/wheel_state| N4
+    U1 -.->|/PANTER/wheel_state (opcional)| N4
 
     P1 --- N1
     P1 --- N2
@@ -37,57 +34,3 @@ flowchart LR
     P4 --- N4
 
     U2 -. solo visualización .- U1
-```
-
-## Flujo principal
-
-```text
-trajectory_test_node / spin_test_node
-            ↓
-       /PANTER/cmd_vel
-            ↓
-   cmd_vel_to_wheel_cmd_node
-            ↓
-      /PANTER/wheel_cmd
-            ↓
-    default_server_endpoint
-            ↓
-            Unity
-            ↓
-     /PANTER/joint_states
-```
-
-## Qué hace cada pieza
-
-* `panter_control`
-
-  * contiene los nodos de prueba y conversión
-  * `trajectory_test_node`
-  * `spin_test_node`
-  * `cmd_vel_to_wheel_cmd_node`
-
-* `wheel_control_msgs`
-
-  * define `WheelCommand`
-
-* `wheel_state`
-
-  * define `WheelState`
-
-* `ros_tcp_endpoint`
-
-  * crea el puente ROS 2 ↔ Unity con `default_server_endpoint`
-
-* `ROS_wheelcontroller` en Unity
-
-  * recibe `/PANTER/wheel_cmd`
-  * aplica el control a las ruedas
-  * publica `/PANTER/joint_states`
-
-* `WheelTopViewDebugUI` en Unity
-
-  * solo visualiza datos
-  * no es un nodo ROS
-
-```
-```
