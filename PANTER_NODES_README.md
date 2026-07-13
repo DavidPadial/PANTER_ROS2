@@ -248,7 +248,7 @@ Si recompilas algún paquete:
 ```bash
 cd ~/ros2_ws
 source /opt/ros/humble/setup.bash
-colcon build --packages-select panter_control --symlink-install
+colcon build
 source ~/ros2_ws/install/setup.bash
 ```
 
